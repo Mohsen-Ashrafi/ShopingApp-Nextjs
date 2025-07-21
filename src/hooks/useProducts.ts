@@ -1,5 +1,5 @@
 import { addProduct, getOneProductById, getProducts, removeProduct, updateProduct } from "@/services/productService";
-import { AddProductResponse, GetOneProductResponse, GetProductsResponse, Product, RemoveProductResponse, UpdateProductResponse } from "@/types/product";
+import { AddProductResponse, GetOneProductResponse, GetProductsResponse, RemoveProductResponse, UpdateProductResponse } from "@/types/product";
 import { useMutation, UseMutationResult, useQuery, UseQueryResult } from "@tanstack/react-query";
 
 export const useGetProducts = (
@@ -13,16 +13,17 @@ export const useGetProducts = (
     refetchOnWindowFocus: true,
   });
 
-export const useAddProduct = (): UseMutationResult<AddProductResponse, Error, Partial<Product>> => {
-  return useMutation({ mutationFn: addProduct })
+export const useAddProduct = (): UseMutationResult<AddProductResponse, Error, FormData> => {
+  return useMutation({ mutationFn: addProduct });
 }
+
 
 export const useUpdateProduct = (): UseMutationResult<
   UpdateProductResponse,
   Error,
-  { productId: string; data: Partial<Product> }
+  { productId: string; data: FormData }
 > => {
-  return useMutation<UpdateProductResponse, Error, { productId: string; data: Partial<Product> }>({ mutationFn: updateProduct })
+  return useMutation<UpdateProductResponse, Error, { productId: string; data: FormData }>({ mutationFn: updateProduct })
 }
 
 export const useGetProductById = (id: string): UseQueryResult<GetOneProductResponse, Error> =>

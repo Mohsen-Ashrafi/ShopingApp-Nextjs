@@ -9,6 +9,8 @@ import { cookies } from "next/headers";
 import { toStringCookies } from "@/utils/toStringCookies";
 import { GetCategoriesResponse } from "@/types/category";
 import { GetProductsResponse } from "@/types/product";
+import Footer from "@/components/Footer";
+import Image from "next/image";
 
 export const dynamic = "force-dynamic"; // eq to {cache:"no-store"} or SSR in pages Dir. :)
 
@@ -28,6 +30,7 @@ async function Products({ searchParams }: ProductsPageProps) {
     productsPromise,
     categoryPromise,
   ]);
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL?.replace("/api", "") ?? "";
 
   return (
     <div className="space-y-4">
@@ -43,7 +46,18 @@ async function Products({ searchParams }: ProductsPageProps) {
                 key={product._id}
                 className="rounded-xl shadow-lg p-4 bg-white"
               >
-                <h2 className="font-bold text-lg md:text-xl mb-4">
+                <div className="relative w-full h-[180px] bg-gray-50 rounded-lg overflow-hidden mb-3">
+                  <Image
+                    src={`${baseUrl}${product.imageLink}`}
+                    alt={product.title}
+                    fill
+                    className="object-contain"
+                    sizes="(max-width: 768px) 100vw, 600px"
+                    priority
+                  />
+                </div>
+
+                <h2 className="font-bold text-lg md:text-xl mb-4 truncate">
                   {product.title}
                 </h2>
 
@@ -60,7 +74,7 @@ async function Products({ searchParams }: ProductsPageProps) {
 
                 <Link
                   className="text-blue-500 hover:text-blue-600 font-semibold text-sm transition-all duration-300
-                  border-b-2 border-transparent hover:border-blue-600 pb-[1px]"
+      border-b-2 border-transparent hover:border-blue-600 pb-[1px]"
                   href={`/products/${product.slug}`}
                 >
                   View product
@@ -75,6 +89,7 @@ async function Products({ searchParams }: ProductsPageProps) {
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

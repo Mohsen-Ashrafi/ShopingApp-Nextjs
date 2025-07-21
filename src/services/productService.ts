@@ -1,4 +1,4 @@
-import { AddProductResponse, GetOneProductResponse, GetProductsResponse, LikeProductResponse, Product, RemoveProductResponse, UpdateProductResponse } from "@/types/product";
+import { AddProductResponse, GetOneProductResponse, GetProductsResponse, LikeProductResponse, RemoveProductResponse, UpdateProductResponse } from "@/types/product";
 import http from "./httpService";
 
 export function getProducts(qs: string, cookies: string): Promise<GetProductsResponse> {
@@ -23,8 +23,12 @@ export function likeProduct(id: string): Promise<LikeProductResponse> {
 
 // admin related function
 
-export function addProduct(data: Partial<Product>): Promise<AddProductResponse> {
-    return http.post(`/admin/product/add`, data).then(({ data }) => data.data);
+export function addProduct(data: FormData): Promise<AddProductResponse> {
+    return http.post(`/admin/product/add`, data, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+        },
+    }).then(({ data }) => data.data);
 }
 
 export function removeProduct(id: string): Promise<RemoveProductResponse> {
@@ -33,12 +37,16 @@ export function removeProduct(id: string): Promise<RemoveProductResponse> {
 
 export function updateProduct({
     productId,
-    data
+    data,
 }: {
     productId: string;
-    data: Partial<Product>;
+    data: FormData;
 }): Promise<UpdateProductResponse> {
-    return http.patch(`/admin/product/update/${productId}`, data).then(({ data }) => data.data);
+    return http.patch(`/admin/product/update/${productId}`, data, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+        },
+    }).then(({ data }) => data.data);
 }
 
 

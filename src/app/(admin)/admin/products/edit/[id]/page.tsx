@@ -1,4 +1,5 @@
 "use client";
+
 import Loading from "@/common/Loading";
 import { useGetProductById, useUpdateProduct } from "@/hooks/useProducts";
 import { useParams, useRouter } from "next/navigation";
@@ -14,9 +15,11 @@ function UpdateProductPage() {
   const { data, isLoading } = useGetProductById(id as string);
   const { product } = data || {};
   const { data: categoryData } = useGetCategories();
-  const categories = useMemo<Category[]>(() => {
-    return categoryData?.categories || [];
-  }, [categoryData]);
+  const categories = useMemo<Category[]>(
+    () => categoryData?.categories || [],
+    [categoryData]
+  );
+  const router = useRouter();
   const [formData, setFormData] = useState<ProductData>({
     title: "",
     description: "",
@@ -28,18 +31,13 @@ function UpdateProductPage() {
     countInStock: "",
     imageLink: "",
   });
-  const router = useRouter();
   const [tags, setTags] = useState<string[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(
     null
   );
-  const { isPending, mutateAsync } = useUpdateProduct();
-
-  const handlerChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  const [coverImageFile, setCoverImageFile] = useState<File | null>(null);
+  const [coverImageUrl, setCoverImageUrl] = useState<string | null>(null);
+  const { mutateAsync, isPending } = useUpdateProduct();
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -50,51 +48,87 @@ function UpdateProductPage() {
     }
 
     try {
+      const formDataToSend = new FormData();
+
+      Object.entries(formData).forEach(([key, value]) => {
+        formDataToSend.append(key, String(value));
+      });
+
+      formDataToSend.append("tags", JSON.stringify(tags));
+      formDataToSend.append("category", selectedCategory._id);
+
+      if (coverImageFile) {
+        formDataToSend.append("image", coverImageFile);
+      }
+
       const { message } = await mutateAsync({
         productId: product._id,
-        data: {
-          ...formData,
-          price: Number(formData.price),
-          discount: Number(formData.discount),
-          offPrice: Number(formData.offPrice),
-          countInStock: Number(formData.countInStock),
-          tags,
-          category: selectedCategory._id,
-        },
+        data: formDataToSend,
       });
-      router.push("/admin/products");
+
       toast.success(message);
+      router.push("/admin/products");
     } catch (error) {
       const axiosError = error as AxiosError<{ message: string }>;
       toast.error(axiosError?.response?.data?.message || "An error occurred");
     }
   };
 
+  const handlerChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
   useEffect(() => {
     if (!product || categories.length === 0) return;
 
-    setTags(product.tags || []);
+    let parsedTags: string[] = [];
 
-    const categoryObj = categories.find(
-      (c) =>
-        c._id ===
-        (typeof product.category === "string"
-          ? product.category
-          : product.category._id)
+    try {
+      if (Array.isArray(product.tags)) {
+        const first = product.tags[0];
+        if (typeof first === "string") {
+          const parsed = JSON.parse(first);
+          parsedTags = Array.isArray(parsed) ? parsed : [];
+        } else {
+          parsedTags = product.tags;
+        }
+      } else if (typeof product.tags === "string") {
+        parsedTags = JSON.parse(product.tags);
+      }
+    } catch (error) {
+      console.error("Error parsing tags:", error);
+      parsedTags = [];
+    }
+
+    setTags(parsedTags);
+
+    setFormData({
+      title: product.title ?? "",
+      description: product.description ?? "",
+      slug: product.slug ?? "",
+      brand: product.brand ?? "",
+      price: String(product.price ?? ""),
+      discount: String(product.discount ?? ""),
+      offPrice: String(product.offPrice ?? ""),
+      countInStock: String(product.countInStock ?? ""),
+      imageLink: product.imageLink ?? "",
+    });
+
+    const categoryObj = categories.find((c) =>
+      typeof product.category === "string"
+        ? c._id === product.category
+        : c._id === product.category._id
     );
     setSelectedCategory(categoryObj || null);
 
-    setFormData({
-      title: product.title || "",
-      description: product.description || "",
-      slug: product.slug || "",
-      brand: product.brand || "",
-      price: product.price || 0,
-      discount: product.discount || 0,
-      offPrice: product.offPrice || 0,
-      countInStock: product.countInStock || 0,
-      imageLink: product.imageLink || "",
-    });
+    if (product.imageLink) {
+      const fullUrl = `${process.env.NEXT_PUBLIC_API_URL?.replace("/api", "")}${
+        product.imageLink
+      }`;
+      setCoverImageUrl(fullUrl);
+    }
   }, [product, categories]);
 
   if (isLoading || !product) return <Loading />;
@@ -112,6 +146,9 @@ function UpdateProductPage() {
         isPending={isPending}
         productData={formData}
         productDataOnChange={handlerChange}
+        coverImageUrl={coverImageUrl}
+        setCoverImageUrl={setCoverImageUrl}
+        setCoverImageFile={setCoverImageFile}
       />
     </div>
   );
