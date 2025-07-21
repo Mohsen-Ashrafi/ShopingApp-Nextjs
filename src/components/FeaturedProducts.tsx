@@ -25,7 +25,7 @@ export default function FeaturedProducts({ latest }: Props) {
             className="border rounded-lg p-4 shadow hover:shadow-lg transition"
           >
             <h3 className="font-semibold mb-2">{product.title}</h3>
-            <p className="text-sm text-gray-600 mb-2">{product.description}</p>
+            <p className="text-sm text-gray-600 mb-2 truncate">{product.description}</p>
             <p className="font-bold text-blue-600 mb-4">${product.price}</p>
             <Link
               href={`/products/${product.slug}`}
