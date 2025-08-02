@@ -22,6 +22,7 @@ function RadioInput({
       <FormControlLabel
         control={
           <Radio
+            id={id}
             checked={checked}
             value={value}
             color="primary"
