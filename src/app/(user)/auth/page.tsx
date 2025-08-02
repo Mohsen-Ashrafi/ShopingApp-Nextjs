@@ -1,15 +1,20 @@
 "use client";
+
 import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import SendOTPForm from "./SendOTPForm";
+import CheckOTPForm from "./CheckOTPForm";
 import toast from "react-hot-toast";
 import { useMutation } from "@tanstack/react-query";
 import { checkOtp, getOtp } from "@/services/authServices";
-import CheckOTPForm from "./CheckOTPForm";
 import { useRouter } from "next/navigation";
 import { AxiosError } from "axios";
 
 interface OtpResponse {
   message: string;
+  otp: string;
+  role: "ADMIN" | "USER";
+  phoneNumber: string;
+  expiresIn: number;
   user?: {
     isActive: boolean;
   };
@@ -18,14 +23,15 @@ interface OtpResponse {
 const RESEND_TIME = 90;
 
 function AuthPage() {
-  const [phoneNumber, setPhoneNumber] = useState<string>("09904442764");
+  const [phoneNumber, setPhoneNumber] = useState<string>("");
   const [otp, setOtp] = useState<string>("");
-  const [step, setStep] = useState<number>(2);
+  const [step, setStep] = useState<number>(1);
   const [time, setTime] = useState<number>(RESEND_TIME);
+  const [role, setRole] = useState<"ADMIN" | "USER" | null>(null);
   const router = useRouter();
+
   const {
     data: otpResponse,
-    error,
     isPending,
     mutateAsync: mutateGetOtp,
   } = useMutation<
@@ -44,23 +50,28 @@ function AuthPage() {
     mutationFn: checkOtp,
   });
 
-  const PhoneNumberHandler = (e: ChangeEvent<HTMLInputElement>) => {
+  const handlePhoneNumberChange = (e: ChangeEvent<HTMLInputElement>) => {
     setPhoneNumber(e.target.value);
   };
 
   const sendOtpHandler = async (
-    e: FormEvent<HTMLFormElement> | React.MouseEvent
+    e?: FormEvent<HTMLFormElement> | React.MouseEvent,
+    customPhoneNumber?: string
   ) => {
-    e.preventDefault();
+    if (e) e.preventDefault();
+    const targetPhone = customPhoneNumber || phoneNumber;
+
     try {
-      const data = await mutateGetOtp({ phoneNumber });
+      const data = await mutateGetOtp({ phoneNumber: targetPhone });
       toast.success(data.message);
       setStep(2);
       setTime(RESEND_TIME);
       setOtp("");
+      setRole(data.role);
+      setPhoneNumber(targetPhone);
     } catch (error) {
       const axiosError = error as AxiosError<{ message: string }>;
-      toast.error(axiosError?.response?.data?.message || "An error occurred");
+      toast.error(axiosError?.response?.data?.message || "خطایی رخ داد");
     }
   };
 
@@ -69,7 +80,10 @@ function AuthPage() {
     try {
       const { message, user } = await mutateCheckOtp({ phoneNumber, otp });
       toast.success(message);
-      if (user.isActive) {
+
+      if (role === "ADMIN") {
+        router.push("/admin");
+      } else if (user.isActive) {
         router.push("/");
       } else {
         router.push("/complete-profile");
@@ -87,21 +101,24 @@ function AuthPage() {
     };
   }, [time]);
 
-  const renderSteps = () => {
+  const renderStep = () => {
     switch (step) {
       case 1:
         return (
           <SendOTPForm
             phoneNumber={phoneNumber}
-            onChange={PhoneNumberHandler}
+            onChange={handlePhoneNumberChange}
             onSubmit={sendOtpHandler}
             isPending={isPending}
+            onAdminClick={() => {
+              sendOtpHandler(undefined, "09123456789");
+            }}
           />
         );
       case 2:
         return (
           <CheckOTPForm
-            onBack={() => setStep((s) => s - 1)}
+            onBack={() => setStep(1)}
             otp={otp}
             setOtp={setOtp}
             onSubmit={checkOtpHandler}
@@ -118,9 +135,10 @@ function AuthPage() {
 
   return (
     <div className="flex justify-center">
-      <div className="w-full sm:max-w-sm">{renderSteps()}</div>
+      <div className="w-full sm:max-w-sm">{renderStep()}</div>
     </div>
   );
 }
 
 export default AuthPage;
+

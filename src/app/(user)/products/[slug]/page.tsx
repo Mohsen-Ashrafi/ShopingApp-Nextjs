@@ -8,14 +8,18 @@ export const dynamic = "force-static"; // SSG or {cache : "force-cache"}
 export const dynamicParams = false;
 
 interface ProductPageProps {
-  params: { slug: string };
+  // params: { slug: string };
+  params: Promise<{ slug: string }>;
 }
 
 async function ProductPage({ params }: ProductPageProps) {
-  const { slug } = params;
+  const { slug } = await params;
   const { product }: { product: Product } = await getOneProductBySlug(slug);
+  // const baseUrl = process.env.NEXT_PUBLIC_API_URL?.replace("/api", "") ?? "";
+  // const imageUrl = `${baseUrl}${product.imageLink}`;
   const baseUrl = process.env.NEXT_PUBLIC_API_URL?.replace("/api", "") ?? "";
-  const imageUrl = `${baseUrl}${product.imageLink}`;
+  const imageUrl = product?.imageLink ? `${baseUrl}${product.imageLink}` : "";
+
   return (
     <div className="bg-gray-50 min-h-screen p-2">
       <p className="text-gray-600 text-base mx-4">

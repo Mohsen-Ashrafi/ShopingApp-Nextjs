@@ -11,7 +11,8 @@ interface RetryConfig extends AxiosRequestConfig {
 }
 
 const app: AxiosInstance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
+  // baseURL: process.env.NEXT_PUBLIC_API_URL,
+  baseURL: process.env.NEXT_PUBLIC_API_URL ?? "",
   withCredentials: true,
 });
 
@@ -29,8 +30,11 @@ app.interceptors.response.use(
       originalConfig._retry = true;
       try {
         const { data } = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_URL}/user/refresh-token`,
+          `${process.env.NEXT_PUBLIC_API_URL ?? ""}/user/refresh-token`,
           { withCredentials: true }
+          // const { data } = await axios.get(
+          //   `${process.env.NEXT_PUBLIC_API_URL}/user/refresh-token`,
+          //   { withCredentials: true }
         );
         if (data) return app(originalConfig);
       } catch (error) {

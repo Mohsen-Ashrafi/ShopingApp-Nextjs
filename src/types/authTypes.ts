@@ -61,6 +61,10 @@ export interface GetOtpRequest {
 
 export interface GetOtpResponse {
   message: string;
+  otp: string;
+  role: "ADMIN" | "USER";
+  phoneNumber: string;
+  expiresIn: number;
 }
 
 export interface CheckOtpRequest {

@@ -124,9 +124,12 @@ function UpdateProductPage() {
     setSelectedCategory(categoryObj || null);
 
     if (product.imageLink) {
-      const fullUrl = `${process.env.NEXT_PUBLIC_API_URL?.replace("/api", "")}${
-        product.imageLink
-      }`;
+      // const fullUrl = `${process.env.NEXT_PUBLIC_API_URL?.replace("/api", "")}${
+      //   product.imageLink
+      // }`;
+      const baseUrl =
+        process.env.NEXT_PUBLIC_API_URL?.replace("/api", "") || "";
+      const fullUrl = `${baseUrl}${product.imageLink}`;
       setCoverImageUrl(fullUrl);
     }
   }, [product, categories]);

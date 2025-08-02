@@ -6,14 +6,18 @@ import CategoryForm, {
   categoryTypes,
 } from "@/components/CategoryForm";
 import { useGetCategoryById, useUpdateCategory } from "@/hooks/useCategories";
-import { CategoryFormData } from "@/types/category";
+import { Category, CategoryFormData } from "@/types/category";
 import { includeObj } from "@/utils/objectUtils";
 import { AxiosError } from "axios";
 import { useParams, useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 
-const includesCategoryKey = ["title", "englishTitle", "description"];
+const includesCategoryKey: (keyof Category)[] = [
+  "title",
+  "englishTitle",
+  "description",
+];
 
 function UpdateCategoryPage() {
   const { id } = useParams();
@@ -69,7 +73,9 @@ function UpdateCategoryPage() {
 
   return (
     <div>
-      <h1 className="sm:mb-4 m-4 font-bold sm:text-xl text-lg">Edit Category</h1>
+      <h1 className="sm:mb-4 m-4 font-bold sm:text-xl text-lg">
+        Edit Category
+      </h1>
       <CategoryForm
         category={formData}
         handleChange={handleChange}

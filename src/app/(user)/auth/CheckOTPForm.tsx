@@ -14,6 +14,7 @@ import React, { FormEvent, MouseEvent } from "react";
 
 interface OTPResponse {
   message: string;
+  otp?: string;
 }
 
 interface CheckOTPFormProps {
@@ -59,6 +60,12 @@ const CheckOTPForm: React.FC<CheckOTPFormProps> = ({
         {otpResponse && (
           <Typography variant="body2" color="text.secondary">
             {otpResponse.message}
+          </Typography>
+        )}
+
+        {otpResponse?.otp && (
+          <Typography variant="body2" color="error" textAlign="center">
+            OTP Code: {otpResponse.otp}
           </Typography>
         )}
 

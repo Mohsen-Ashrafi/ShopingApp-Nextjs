@@ -17,8 +17,11 @@ export default async function middlewareAuth(
 ): Promise<User | undefined> {
   const cookieHeader = req.headers.get("cookie") || "";
 
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL ?? "";
+
   const { data }: ResponseData = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/user/profile`,
+    // `${process.env.NEXT_PUBLIC_API_URL}/user/profile`,
+    `${baseUrl}/user/profile`,
     {
       method: "GET",
       credentials: "include",

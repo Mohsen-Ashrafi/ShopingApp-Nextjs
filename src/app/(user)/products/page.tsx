@@ -15,7 +15,8 @@ import Image from "next/image";
 export const dynamic = "force-dynamic"; // eq to {cache:"no-store"} or SSR in pages Dir. :)
 
 interface ProductsPageProps {
-  searchParams: Record<string, string | string[] | undefined>;
+  // searchParams: Record<string, string | string[] | undefined>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
 async function Products({ searchParams }: ProductsPageProps) {

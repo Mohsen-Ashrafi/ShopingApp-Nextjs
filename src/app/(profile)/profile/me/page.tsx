@@ -11,6 +11,7 @@ import { AxiosError } from "axios";
 import { FormEvent, JSX, useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import ResponsiveHeader from "../ResponsiveHeader";
+import { User } from "@/types/authTypes";
 
 type FormDataType = {
   name?: string;
@@ -27,7 +28,7 @@ function MePage(): JSX.Element {
   const queryClient = useQueryClient();
   const { isPending, mutateAsync } = useMutation({ mutationFn: updateProfile });
 
-  const includeskey = ["name", "email", "phoneNumber", "biography"];
+  const includeskey: (keyof User)[] = ["name", "email", "phoneNumber", "biography"];
 
   useEffect(() => {
     if (user) {
