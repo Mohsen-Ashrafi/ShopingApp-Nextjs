@@ -107,10 +107,27 @@ async function ProductPage({ params }: ProductPageProps) {
 
 export default ProductPage;
 
-export async function generateStaticParams(): Promise<{ slug: string }[]> {
-  const { products } = await getProducts("", "");
+// export async function generateStaticParams(): Promise<{ slug: string }[]> {
+//   const { products } = await getProducts("", "");
 
-  return products.map((product) => ({
-    slug: product.slug,
-  }));
+//   return products.map((product) => ({
+//     slug: product.slug,
+//   }));
+// }
+   
+
+export async function generateStaticParams(): Promise<{ slug: string }[]> {
+  if (!process.env.NEXT_PUBLIC_API_URL) {
+    return [];
+  }
+ // fixing error
+  try {
+    const { products } = await getProducts("", "");
+    return products.map((product) => ({
+      slug: product.slug,
+    }));
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    return [];
+  }
 }
