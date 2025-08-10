@@ -1,4 +1,4 @@
-import { FormControlLabel, Radio, RadioGroup } from "@mui/material";
+import { FormControlLabel, Radio } from "@mui/material";
 
 interface RadioInputProps {
   id?: string;
@@ -18,24 +18,24 @@ function RadioInput({
   label,
 }: RadioInputProps) {
   return (
-    <RadioGroup name={name} value={value} onChange={onChange} row>
-      <FormControlLabel
-        control={
-          <Radio
-            id={id}
-            checked={checked}
-            value={value}
-            color="primary"
-            sx={{
-              "&.Mui-checked": {
-                color: "#2196f3",
-              },
-            }}
-          />
-        }
-        label={label}
-      />
-    </RadioGroup>
+    <FormControlLabel
+      control={
+        <Radio
+          id={id}
+          checked={checked}
+          value={value}
+          onChange={(e) => onChange(e, e.target.value)}
+          name={name}
+          color="primary"
+          sx={{
+            "&.Mui-checked": {
+              color: "#2196f3",
+            },
+          }}
+        />
+      }
+      label={label}
+    />
   );
 }
 

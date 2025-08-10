@@ -2,7 +2,7 @@
 import RadioInput from "@/common/RadioInput";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
-
+import { RadioGroup } from "@mui/material";
 interface SortOption {
   id: number;
   value: string;
@@ -49,14 +49,13 @@ function ProductsSort() {
   };
 
   useEffect(() => {
-    setSort(searchParams.get("sort") || "");
+    setSort(searchParams.get("sort") || "latest");
   }, [searchParams]);
 
   return (
-    <div>
-      <p className="font-bold my-2 sm:my-4 text-sm md:text-base">
-        Sorting products
-      </p>
+    <div className="flex items-center gap-4">
+    <p className="font-bold text-sm md:text-base">Sorting products:</p>
+    <RadioGroup row name="product-sort" value={sort} onChange={sortHandler}>
       {sortOptions.map((item) => {
         return (
           <RadioInput
@@ -70,6 +69,7 @@ function ProductsSort() {
           />
         );
       })}
+        </RadioGroup>
     </div>
   );
 }

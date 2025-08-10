@@ -9,7 +9,7 @@ import { useGetProducts } from "@/hooks/useProducts";
 export default function Home() {
   const { data, isLoading, isError } = useGetProducts("", "");
   const products = data?.products ?? [];
-  const latest = products.slice(0, 3);
+  const latest = products.slice(0, 12);
 
   if (isLoading) return <Loading />;
   if (isError)

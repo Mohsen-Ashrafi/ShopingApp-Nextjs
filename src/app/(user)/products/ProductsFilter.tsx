@@ -44,7 +44,7 @@ function ProductsFilter({ categories }: ProductsFilterProps) {
 
   return (
     <div>
-      <p className="font-bold sm:mb-4 mb-2">Categories</p>
+      {/* <p className="font-bold sm:mb-4 mb-2">Categories</p> */}
       <ul className="sm:space-y-2 space-y-1">
         {categories.map((category) => {
           return (
