@@ -20,8 +20,9 @@ function LikeProduct({ product }: LikeProductProps) {
     try {
       const { message } = await likeProduct(product._id);
       toast.success(message);
-      router.replace(`${pathname}?${searchParams.toString()}`);
-      router.refresh();
+      router.replace(`${pathname}?${searchParams.toString()}`, {
+        scroll: false,
+      });
     } catch (error) {
       const axiosError = error as AxiosError<{ message: string }>;
       toast.error(axiosError?.response?.data?.message || "An error occurred");
@@ -30,7 +31,11 @@ function LikeProduct({ product }: LikeProductProps) {
   return (
     <div className="my-2">
       <IconButton
-        onClick={likeHandler}
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          likeHandler();
+        }}
         sx={{
           color: product.isLiked ? "error.main" : "grey.500",
         }}

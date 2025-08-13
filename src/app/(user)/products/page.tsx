@@ -37,18 +37,19 @@ async function Products({ searchParams }: ProductsPageProps) {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <ProductsHeader categories={categories} />
       </div>
-      
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         {products.map((product) => {
           const imageUrl = product.imageLink
             ? `${baseUrl}${product.imageLink}`
             : "";
 
           return (
-            <div
+            <Link
               key={product._id}
-              className="relative bg-gray-200 rounded-lg p-3 shadow-2xl hover:shadow-[0_4px_30px_rgba(59,130,246,0.7)] 
-          transition-shadow duration-300 flex flex-col text-sm"
+              href={`/products/${product.slug}`}
+              className="relative bg-gray-200 rounded-lg p-3 shadow-2xl hover:shadow-[0_4px_30px_rgba(59,130,246,0.7)]
+              transition-shadow duration-300 flex flex-col text-sm"
             >
               <div className="absolute right-0 top-0 z-10">
                 <LikeProduct product={product} />
@@ -89,14 +90,7 @@ async function Products({ searchParams }: ProductsPageProps) {
               ) : (
                 <p className="font-bold text-blue-600 mb-2">${product.price}</p>
               )}
-
-              <Link
-                href={`/products/${product.slug}`}
-                className="text-blue-500 hover:underline text-xs mt-auto"
-              >
-                View Product
-              </Link>
-            </div>
+            </Link>
           );
         })}
       </div>

@@ -1,19 +1,9 @@
 "use client";
 
+import { Product } from "@/types/product";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-
-interface Product {
-  _id: string;
-  title: string;
-  description: string;
-  price: number;
-  slug: string;
-  imageLink?: string;
-  offPrice?: number;
-  discount?: number;
-}
 
 interface Props {
   latest: Product[];
@@ -78,10 +68,11 @@ function FeaturedProducts({ latest }: Props) {
                   : "";
 
                 return (
-                  <div
+                  <Link
+                    href={`/products/${product.slug}`}
                     key={product._id}
                     className="bg-gray-200 rounded-lg p-3 shadow-2xl hover:shadow-[0_4px_30px_rgba(59,130,246,0.7)] 
-                  transition-shadow duration-300 flex flex-col text-sm"
+                    transition-shadow duration-300 flex flex-col text-sm"
                   >
                     {imageUrl && (
                       <div className="relative w-full h-36 sm:h-40 mb-3 overflow-hidden rounded">
@@ -92,6 +83,7 @@ function FeaturedProducts({ latest }: Props) {
                           className="object-contain"
                           sizes="(max-width: 640px) 100vw, 33vw"
                         />
+
                         {typeof product.discount === "number" &&
                           product.discount > 0 && (
                             <span className="absolute top-2 left-0 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">
@@ -121,13 +113,7 @@ function FeaturedProducts({ latest }: Props) {
                         ${product.price}
                       </p>
                     )}
-                    <Link
-                      href={`/products/${product.slug}`}
-                      className="text-blue-500 hover:underline text-xs mt-auto"
-                    >
-                      View Product
-                    </Link>
-                  </div>
+                  </Link>
                 );
               })}
             </div>
@@ -151,5 +137,3 @@ function FeaturedProducts({ latest }: Props) {
 }
 
 export default FeaturedProducts;
-
-// pagination ro doros k0m(yekam overflow khorde)
