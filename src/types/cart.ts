@@ -28,6 +28,7 @@ export interface CartItemType {
   offPrice: number;
   discount: number;
   quantity: number;
+  imageLink?: string
 }
 
 export interface PayDetail {

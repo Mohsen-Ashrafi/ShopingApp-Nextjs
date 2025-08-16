@@ -29,7 +29,10 @@ function CartSummary({ payDetail }: Props) {
   };
 
   return (
-    <div className="border border-gray-300 rounded-xl p-4 shadow-sm bg-white flex flex-col gap-y-4">
+    <div
+      className="rounded-xl p-4 bg-gray-200 flex flex-col gap-y-4 shadow-2xl hover:shadow-[0_4px_30px_rgba(59,130,246,0.7)]
+      transition-shadow duration-300"
+    >
       <h2 className="font-bold text-lg sm:text-xl text-gray-800 border-b border-gray-300 pb-2">
         Payment Summary
       </h2>

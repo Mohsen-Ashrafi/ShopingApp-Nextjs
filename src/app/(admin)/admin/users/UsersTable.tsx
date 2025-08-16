@@ -12,13 +12,13 @@ interface Props {
 function UsersTable({ users }: Props) {
   return (
     <div className="overflow-x-auto">
-      <table className="min-w-[720px] sm:min-w-full border rounded-xl text-xs sm:text-sm">
+      <table className="min-w-[720px] sm:min-w-full border border-gray-300 rounded-xl text-xs sm:text-sm">
         <thead className="bg-gray-100 text-gray-700 font-semibold">
           <tr>
             {userListTableHeads.map((item) => (
               <th
                 key={item.id}
-                className="whitespace-nowrap px-2 sm:px-4 py-1 sm:py-2 border-b border-gray-200 text-center"
+                className="whitespace-nowrap px-2 sm:px-4 py-1 sm:py-2 border-b border-gray-300 text-center"
               >
                 {item.label}
               </th>
@@ -31,16 +31,16 @@ function UsersTable({ users }: Props) {
               key={user._id}
               className="hover:bg-gray-50 transition-all duration-200"
             >
-              <td className="text-center border-b px-2 sm:px-4 py-1 sm:py-2">
+              <td className="text-center border-b border-gray-300 px-2 sm:px-4 py-1 sm:py-2">
                 {index + 1}
               </td>
-              <td className="text-center border-b px-2 sm:px-4 py-1 sm:py-2">
+              <td className="text-center border-b border-gray-300 px-2 sm:px-4 py-1 sm:py-2">
                 {user.name}
               </td>
-              <td className="text-center border-b px-2 sm:px-4 py-1 sm:py-2">
+              <td className="text-center border-b border-gray-300 px-2 sm:px-4 py-1 sm:py-2">
                 {user.email}
               </td>
-              <td className="text-center border-b px-2 sm:px-4 py-1 sm:py-2">
+              <td className="text-center border-b border-gray-300 px-2 sm:px-4 py-1 sm:py-2">
                 <div className="flex items-center justify-center gap-1 text-xs sm:text-sm">
                   {user.phoneNumber}
                   {user.isVerifiedPhoneNumber && (
@@ -48,7 +48,7 @@ function UsersTable({ users }: Props) {
                   )}
                 </div>
               </td>
-              <td className="text-center border-b px-2 sm:px-4 py-1 sm:py-2">
+              <td className="text-center border-b border-gray-300 px-2 sm:px-4 py-1 sm:py-2">
                 <div className="flex flex-wrap justify-center gap-1">
                   {user.Products?.map((product, index) => (
                     <span
@@ -60,14 +60,14 @@ function UsersTable({ users }: Props) {
                   ))}
                 </div>
               </td>
-              <td className="text-center border-b px-2 sm:px-4 py-1 sm:py-2 text-[11px] sm:text-sm">
+              <td className="text-center border-b border-gray-300 px-2 sm:px-4 py-1 sm:py-2 text-[11px] sm:text-sm">
                 {new Date(user.createdAt).toLocaleDateString("en-US", {
                   year: "numeric",
                   month: "short",
                   day: "numeric",
                 })}
               </td>
-              <td className="text-center border-b px-2 sm:px-4 py-1 sm:py-2">
+              <td className="text-center border-b border-gray-300 px-2 sm:px-4 py-1 sm:py-2">
                 <Tooltip title="View">
                   <Link href={`/admin/users/${user._id}`}>
                     <IconButton color="primary" size="small">

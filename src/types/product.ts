@@ -2,6 +2,7 @@ export interface ProductCategory {
   _id: string;
   title: string;
   slug?: string;
+  englishTitle?: string;
 }
 
 export interface Product {

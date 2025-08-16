@@ -3,8 +3,10 @@ import { getOneProductBySlug, getProducts } from "@/services/productService";
 import AddToCart from "./AddToCart";
 import { Product } from "@/types/product";
 import Footer from "@/components/Footer";
+import toast from "react-hot-toast";
+import { AxiosError } from "axios";
+import RelatedProducts from "./RelatedProducts";
 
-// export const dynamic = "force-dynamic";
 export const dynamic = "force-static"; // SSG or {cache : "force-cache"}
 export const dynamicParams = false;
 
@@ -19,6 +21,28 @@ async function ProductPage({ params }: ProductPageProps) {
 
   const baseUrl = process.env.NEXT_PUBLIC_API_URL?.replace("/api", "") ?? "";
   const imageUrl = product?.imageLink ? `${baseUrl}${product.imageLink}` : "";
+
+  let relatedProducts: Product[] = [];
+
+  if (product.category) {
+    try {
+      let categoryParam = "";
+
+      if (typeof product.category === "string") {
+        categoryParam = encodeURIComponent(product.category);
+      } else {
+        categoryParam = encodeURIComponent(
+          product.category.englishTitle ?? product.category.title
+        );
+      }
+
+      const res = await getProducts(`category=${categoryParam}`, "");
+      relatedProducts = res.products.filter((p) => p.slug !== product.slug);
+    } catch (error) {
+      const axiosError = error as AxiosError<{ message: string }>;
+      toast.error(axiosError?.response?.data?.message || "An error occurred");
+    }
+  }
 
   return (
     <div className="bg-gray-50 min-h-screen p-4">
@@ -53,36 +77,38 @@ async function ProductPage({ params }: ProductPageProps) {
             {product.description}
           </p>
 
-          <div className="mt-4">
+          <div className="mt-4 grid grid-cols-2 sm:grid-cols-1 lg:grid-cols-3 gap-2">
             {product.offPrice && product.offPrice < product.price ? (
-              <div className="flex items-center gap-3">
-                <span className="line-through text-gray-400 text-lg sm:text-xl">
-                  {product.price} $
-                </span>
-                <span className="text-gray-700 text-lg sm:text-xl font-bold">
-                  {product.offPrice} $
-                </span>
+              <div className="col-span-1 sm:col-span-2 flex flex-col gap-1 sm:gap-2">
+                <div className="flex items-center gap-2">
+                  <span className="line-through text-gray-400 text-sm sm:text-base">
+                    {product.price} $
+                  </span>
+                  <span className="text-gray-700 text-sm sm:text-lg font-bold">
+                    {product.offPrice} $
+                  </span>
+                </div>
                 {product.discount && (
-                  <span className="bg-red-500 text-white text-xs font-semibold px-3 py-1 rounded-full">
+                  <span className="bg-red-500 text-white text-xs sm:text-sm font-semibold px-3 py-1 rounded-full self-start mt-1">
                     {product.discount}% OFF
                   </span>
                 )}
               </div>
             ) : (
-              <span className="text-primary-800 text-lg sm:text-xl font-semibold">
+              <span className="text-primary-800 text-sm sm:text-lg font-semibold">
                 ${product.price}
               </span>
             )}
-          </div>
-
-          <div className="mt-6 grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-3">
-            <p className="text-green-500 my-3">Free shipping & delivery</p>
-            <div className="sm:col-span-2">
+            <div className="sm:col-span-1">
               <AddToCart product={product} />
             </div>
           </div>
+          <p className="text-green-500 my-3">Free shipping & delivery</p>
         </div>
       </div>
+
+      {/* Related Products */}
+      <RelatedProducts products={relatedProducts} />
 
       <div className="bg-gradient-to-br from-blue-50 to-blue-100 py-10 px-6 md:px-10 mt-12">
         <div className="max-w-6xl mx-auto text-center">
@@ -91,7 +117,7 @@ async function ProductPage({ params }: ProductPageProps) {
           </h3>
           <p className="text-sm md:text-base leading-relaxed text-gray-600 max-w-2xl mx-auto">
             Enjoy <strong>free shipping</strong> for members spending over $500.
-            We offer 4-day standard delivery, 2-day express for groceries,{" "}
+            We offer 4-day standard delivery, 2-day express for groceries,
             <strong>exclusive support</strong>, and the fastest delivery
             experience in the market. Your satisfaction is our priority. Shop
             with confidence at NextShop.
@@ -121,9 +147,3 @@ export async function generateStaticParams(): Promise<{ slug: string }[]> {
     return [];
   }
 }
-
-// /cart image ezafe she-2ta soton she morabayi shekl  she to in safe./arm paypal va ... zade she
-//  view cart bere kenare gheymat
-// age mitoni relatedpost bezar to detailProduct
-// bara site logo bezar
-// darkmode ezafe she

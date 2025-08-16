@@ -54,13 +54,13 @@ function ProductListTable({ products }: Props) {
   return (
     <>
       <div className="overflow-x-auto">
-        <table className="min-w-full border rounded-xl text-xs sm:text-sm">
+        <table className="min-w-full border border-gray-300 rounded-xl text-xs sm:text-sm">
           <thead className="bg-gray-100 text-gray-700 font-semibold">
             <tr>
               {productListTableTHeads.map((item) => (
                 <th
                   key={item.id}
-                  className="whitespace-nowrap px-2 py-2 sm:px-4 sm:py-2 border-b border-gray-200 text-center"
+                  className="whitespace-nowrap px-2 py-2 sm:px-4 sm:py-2 border-b border-gray-300 text-center"
                 >
                   {item.label}
                 </th>
@@ -73,31 +73,34 @@ function ProductListTable({ products }: Props) {
                 key={product._id}
                 className="hover:bg-gray-50 transition-all duration-200"
               >
-                <td className="text-center border-b px-2 py-2 sm:px-4">
+                <td className="text-center border-b border-gray-300 px-2 py-2 sm:px-4">
                   {index + 1}
                 </td>
-                <td className="text-center border-b px-2 py-2 sm:px-4 font-bold truncate max-w-[120px] sm:max-w-none">
+                <td
+                  className="text-center border-b border-gray-300 px-2 py-2 sm:px-4 font-bold truncate max-w-[120px] 
+                sm:max-w-none"
+                >
                   {product.title}
                 </td>
-                <td className="text-center border-b px-2 py-2 sm:px-4">
+                <td className="text-center border-b border-gray-300 px-2 py-2 sm:px-4">
                   {typeof product.category === "object" &&
                   "title" in product.category
                     ? product.category.title
                     : "-"}
                 </td>
-                <td className="text-center border-b px-2 py-2 sm:px-4">
+                <td className="text-center border-b border-gray-300 px-2 py-2 sm:px-4">
                   {product.price}
                 </td>
-                <td className="text-center border-b px-2 py-2 sm:px-4">
+                <td className="text-center border-b border-gray-300 px-2 py-2 sm:px-4">
                   {product.discount}%
                 </td>
-                <td className="text-center border-b px-2 py-2 sm:px-4">
+                <td className="text-center border-b border-gray-300 px-2 py-2 sm:px-4">
                   {product.offPrice}
                 </td>
-                <td className="text-center border-b px-2 py-2 sm:px-4">
+                <td className="text-center border-b border-gray-300 px-2 py-2 sm:px-4">
                   {product.countInStock}
                 </td>
-                <td className="text-center border-b px-2 py-2 sm:px-4">
+                <td className="text-center border-b border-gray-300 px-2 py-2 sm:px-4">
                   <div className="flex items-center justify-center gap-1 sm:gap-2">
                     <Tooltip title="View">
                       <Link href={`/admin/products/${product._id}`}>

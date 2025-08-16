@@ -58,11 +58,11 @@ const CartItem: React.FC<Props> = ({ cartItem }) => {
       flexDirection={{ xs: "column", sm: "row" }}
       justifyContent="space-between"
       alignItems={{ xs: "flex-start", sm: "center" }}
-      border="1px solid #e0e0e0"
+      border="none"
       borderRadius={2}
       p={2}
       mb={2}
-      boxShadow={1}
+      // boxShadow={1}
       gap={2}
     >
       <Typography

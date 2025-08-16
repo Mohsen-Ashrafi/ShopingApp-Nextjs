@@ -54,13 +54,13 @@ export default function CouponTable({ coupons }: Props) {
   return (
     <>
       <div className="overflow-x-auto my-4">
-        <table className="min-w-full border rounded-xl text-xs sm:text-sm">
+        <table className="min-w-full border border-gray-300 rounded-xl text-xs sm:text-sm">
           <thead className="bg-gray-100 text-gray-700 font-semibold">
             <tr>
               {couponListTableTHeads.map((item) => (
                 <th
                   key={item.id}
-                  className="whitespace-nowrap px-2 py-2 sm:px-4 sm:py-2 border-b border-gray-200 text-center"
+                  className="whitespace-nowrap px-2 py-2 sm:px-4 sm:py-2 border-b border-gray-300 text-center"
                 >
                   {item.label}
                 </th>
@@ -73,19 +73,19 @@ export default function CouponTable({ coupons }: Props) {
                 key={coupon._id}
                 className="hover:bg-gray-50 transition-all duration-200"
               >
-                <td className="text-center border-b px-2 py-2 sm:px-4">
+                <td className="text-center border-b border-gray-300 px-2 py-2 sm:px-4">
                   {index + 1}
                 </td>
-                <td className="text-center border-b px-2 py-2 sm:px-4 font-bold">
+                <td className="text-center border-b border-gray-300 px-2 py-2 sm:px-4 font-bold">
                   {coupon.code}
                 </td>
-                <td className="text-center border-b px-2 py-2 sm:px-4">
+                <td className="text-center border-b border-gray-300 px-2 py-2 sm:px-4">
                   <span className="badge badge--primary">{coupon.type}</span>
                 </td>
-                <td className="text-center border-b px-2 py-2 sm:px-4">
+                <td className="text-center border-b border-gray-300 px-2 py-2 sm:px-4">
                   {coupon.amount}
                 </td>
-                <td className="text-center border-b px-2 py-2 sm:px-4">
+                <td className="text-center border-b border-gray-300 px-2 py-2 sm:px-4">
                   <div className="flex flex-col items-center gap-1">
                     {coupon.productIds?.map((p) => (
                       <span
@@ -97,16 +97,16 @@ export default function CouponTable({ coupons }: Props) {
                     ))}
                   </div>
                 </td>
-                <td className="text-center border-b px-2 py-2 sm:px-4">
+                <td className="text-center border-b border-gray-300 px-2 py-2 sm:px-4">
                   {coupon.usageCount}
                 </td>
-                <td className="text-center border-b px-2 py-2 sm:px-4">
+                <td className="text-center border-b border-gray-300 px-2 py-2 sm:px-4">
                   {coupon.usageLimit}
                 </td>
-                <td className="text-center border-b px-2 py-2 sm:px-4">
+                <td className="text-center border-b border-gray-300 px-2 py-2 sm:px-4">
                   {new Date(coupon.expireDate).toLocaleDateString("en-GB")}
                 </td>
-                <td className="text-center border-b px-2 py-2 sm:px-4">
+                <td className="text-center border-b border-gray-300 px-2 py-2 sm:px-4">
                   <div className="flex items-center justify-center gap-1 sm:gap-2">
                     <Tooltip title="View">
                       <Link href={`/admin/coupons/${coupon._id}`}>
