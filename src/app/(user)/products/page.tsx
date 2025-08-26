@@ -40,9 +40,10 @@ async function Products({ searchParams }: ProductsPageProps) {
 
       <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         {products.map((product) => {
-          const imageUrl = product.imageLink
-            ? `${baseUrl}${product.imageLink}`
-            : "";
+          const imageUrl =
+            product.imageLinks && product.imageLinks.length > 0
+              ? `${baseUrl}${product.imageLinks[0]}`
+              : "";
 
           return (
             <Link
@@ -54,6 +55,7 @@ async function Products({ searchParams }: ProductsPageProps) {
               <div className="absolute right-0 top-0 z-10">
                 <LikeProduct product={product} />
               </div>
+
               {imageUrl && (
                 <div className="relative w-full h-36 sm:h-40 mb-3 overflow-hidden rounded">
                   <Image

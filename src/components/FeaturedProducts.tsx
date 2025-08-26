@@ -63,9 +63,10 @@ function FeaturedProducts({ latest }: Props) {
               }}
             >
               {group.map((product) => {
-                const imageUrl = product.imageLink
-                  ? `${baseUrl}${product.imageLink}`
-                  : "";
+                const imageUrl =
+                  product.imageLinks && product.imageLinks.length > 0
+                    ? `${baseUrl}${product.imageLinks[0]}`
+                    : "";
 
                 return (
                   <Link

@@ -46,8 +46,8 @@ function CartPage() {
           cart.productDetail.map((item) => {
             const baseUrl =
               process.env.NEXT_PUBLIC_API_URL?.replace("/api", "") ?? "";
-            const imageUrl = item.imageLink
-              ? `${baseUrl}${item.imageLink}`
+            const imageUrl = item.imageLinks?.length
+              ? `${baseUrl}${item.imageLinks[0]}`
               : "/placeholder.png";
 
             return (

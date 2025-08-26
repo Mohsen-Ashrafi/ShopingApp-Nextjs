@@ -20,6 +20,8 @@ function UpdateProductPage() {
     [categoryData]
   );
   const router = useRouter();
+  const { mutateAsync, isPending } = useUpdateProduct();
+
   const [formData, setFormData] = useState<ProductData>({
     title: "",
     description: "",
@@ -29,15 +31,15 @@ function UpdateProductPage() {
     discount: "",
     offPrice: "",
     countInStock: "",
-    imageLink: "",
   });
+
   const [tags, setTags] = useState<string[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(
     null
   );
-  const [coverImageFile, setCoverImageFile] = useState<File | null>(null);
-  const [coverImageUrl, setCoverImageUrl] = useState<string | null>(null);
-  const { mutateAsync, isPending } = useUpdateProduct();
+
+  const [imageFiles, setImageFiles] = useState<File[]>([]);
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -57,8 +59,10 @@ function UpdateProductPage() {
       formDataToSend.append("tags", JSON.stringify(tags));
       formDataToSend.append("category", selectedCategory._id);
 
-      if (coverImageFile) {
-        formDataToSend.append("image", coverImageFile);
+      if (imageFiles.length > 0) {
+        imageFiles.forEach((file) => {
+          formDataToSend.append("images", file);
+        });
       }
 
       const { message } = await mutateAsync({
@@ -83,8 +87,8 @@ function UpdateProductPage() {
   useEffect(() => {
     if (!product || categories.length === 0) return;
 
+    // parse tags
     let parsedTags: string[] = [];
-
     try {
       if (Array.isArray(product.tags)) {
         const first = product.tags[0];
@@ -104,6 +108,7 @@ function UpdateProductPage() {
 
     setTags(parsedTags);
 
+    // set form data
     setFormData({
       title: product.title ?? "",
       description: product.description ?? "",
@@ -113,9 +118,9 @@ function UpdateProductPage() {
       discount: String(product.discount ?? ""),
       offPrice: String(product.offPrice ?? ""),
       countInStock: String(product.countInStock ?? ""),
-      imageLink: product.imageLink ?? "",
     });
 
+    // set category
     const categoryObj = categories.find((c) =>
       typeof product.category === "string"
         ? c._id === product.category
@@ -123,14 +128,12 @@ function UpdateProductPage() {
     );
     setSelectedCategory(categoryObj || null);
 
-    if (product.imageLink) {
-      // const fullUrl = `${process.env.NEXT_PUBLIC_API_URL?.replace("/api", "")}${
-      //   product.imageLink
-      // }`;
+    // set image previews
+    if (product.images && Array.isArray(product.images)) {
       const baseUrl =
         process.env.NEXT_PUBLIC_API_URL?.replace("/api", "") || "";
-      const fullUrl = `${baseUrl}${product.imageLink}`;
-      setCoverImageUrl(fullUrl);
+      const urls = product.images.map((img: string) => `${baseUrl}${img}`);
+      setImagePreviews(urls);
     }
   }, [product, categories]);
 
@@ -149,9 +152,10 @@ function UpdateProductPage() {
         isPending={isPending}
         productData={formData}
         productDataOnChange={handlerChange}
-        coverImageUrl={coverImageUrl}
-        setCoverImageUrl={setCoverImageUrl}
-        setCoverImageFile={setCoverImageFile}
+        imageFiles={imageFiles}
+        setImageFiles={setImageFiles}
+        imagePreviews={imagePreviews}
+        setImagePreviews={setImagePreviews}
       />
     </div>
   );

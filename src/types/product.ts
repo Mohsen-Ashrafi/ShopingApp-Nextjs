@@ -16,13 +16,14 @@ export interface Product {
   discount: number;
   countInStock: number;
   description: string;
-  imageLink: string;
+  imageLinks?: string[];
   brand?: string;
   updatedAt?: string;
   offPrice?: number;
   rating?: number;
   numReviews?: number;
   tags?: string[];
+  images?: string[];
 }
 
 export interface GetProductsResponse {

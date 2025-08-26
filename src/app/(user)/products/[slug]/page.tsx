@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { getOneProductBySlug, getProducts } from "@/services/productService";
 import AddToCart from "./AddToCart";
 import { Product } from "@/types/product";
@@ -6,6 +5,7 @@ import Footer from "@/components/Footer";
 import toast from "react-hot-toast";
 import { AxiosError } from "axios";
 import RelatedProducts from "./RelatedProducts";
+import ImageSlider from "./ImageSlider";
 
 export const dynamic = "force-static"; // SSG or {cache : "force-cache"}
 export const dynamicParams = false;
@@ -20,7 +20,8 @@ async function ProductPage({ params }: ProductPageProps) {
   const { product }: { product: Product } = await getOneProductBySlug(slug);
 
   const baseUrl = process.env.NEXT_PUBLIC_API_URL?.replace("/api", "") ?? "";
-  const imageUrl = product?.imageLink ? `${baseUrl}${product.imageLink}` : "";
+  const imageUrls =
+    product?.imageLinks?.map((link) => `${baseUrl}${link}`) || [];
 
   let relatedProducts: Product[] = [];
 
@@ -47,17 +48,12 @@ async function ProductPage({ params }: ProductPageProps) {
   return (
     <div className="bg-gray-50 min-h-screen p-4">
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="relative w-full h-[300px] md:h-[450px] bg-white rounded-xl overflow-hidden shadow-md">
-          <Image
-            src={imageUrl}
-            alt={product.title}
-            fill
-            className="object-contain"
-            sizes="(max-width: 768px) 100vw, 600px"
-            priority
-          />
+        {/* --- Product Images --- */}
+        <div className="w-full">
+          <ImageSlider title={product.title} images={imageUrls} />
         </div>
 
+        {/* --- Product Info --- */}
         <div className="flex flex-col justify-start space-y-4">
           <h1 className="text-lg md:text-xl font-extrabold text-gray-900">
             {product.title}
@@ -77,6 +73,7 @@ async function ProductPage({ params }: ProductPageProps) {
             {product.description}
           </p>
 
+          {/* --- Price --- */}
           <div className="mt-4 grid grid-cols-2 sm:grid-cols-1 lg:grid-cols-3 gap-2">
             {product.offPrice && product.offPrice < product.price ? (
               <div className="col-span-1 sm:col-span-2 flex flex-col gap-1 sm:gap-2">
@@ -103,11 +100,12 @@ async function ProductPage({ params }: ProductPageProps) {
               <AddToCart product={product} />
             </div>
           </div>
+
           <p className="text-green-500 my-3">Free shipping & delivery</p>
         </div>
       </div>
 
-      {/* Related Products */}
+      {/* --- Related Products --- */}
       <RelatedProducts products={relatedProducts} />
 
       <div className="bg-gradient-to-br from-blue-50 to-blue-100 py-10 px-6 md:px-10 mt-12">
@@ -136,7 +134,6 @@ export async function generateStaticParams(): Promise<{ slug: string }[]> {
   if (!process.env.NEXT_PUBLIC_API_URL) {
     return [];
   }
-  // fixing error
   try {
     const { products } = await getProducts("", "");
     return products.map((product) => ({

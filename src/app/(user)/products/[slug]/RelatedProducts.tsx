@@ -11,17 +11,17 @@ interface RelatedProductsProps {
 export default function RelatedProducts({ products }: RelatedProductsProps) {
   if (!products || products.length === 0) return null;
   const displayedProducts = products.slice(0, 4);
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL?.replace("/api", "") ?? "";
 
   return (
     <div className="mt-8">
       <h2 className="text-lg font-bold mb-4">Related Products</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
         {displayedProducts.map((product) => {
-          const imageUrl = product.imageLink
-            ? `${process.env.NEXT_PUBLIC_API_URL?.replace("/api", "")}${
-                product.imageLink
-              }`
-            : "";
+          const imageUrl =
+            product.imageLinks && product.imageLinks.length > 0
+              ? `${baseUrl}${product.imageLinks[0]}`
+              : "";
 
           return (
             <Link

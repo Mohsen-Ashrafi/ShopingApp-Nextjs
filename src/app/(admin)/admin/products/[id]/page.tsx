@@ -19,11 +19,11 @@ const ProductDetailPage: React.FC = () => {
   const product = (data as GetOneProductResponse | undefined)?.product;
   const router = useRouter();
 
-  // const baseUrl = process.env.NEXT_PUBLIC_API_URL?.replace("/api", "") ?? "";
-  // const imageUrl = `${baseUrl}${product?.imageLink}`;
-
   const baseUrl = process.env.NEXT_PUBLIC_API_URL?.replace("/api", "") || "";
-  const imageUrl = `${baseUrl}${product?.imageLink || ""}`;
+  const imageUrl =
+    product?.imageLinks && product.imageLinks.length > 0
+      ? `${baseUrl}${product.imageLinks[0]}`
+      : "";
 
   if (isLoading) return <Loading />;
   if (!product) return <div>Product not found</div>;
@@ -32,14 +32,16 @@ const ProductDetailPage: React.FC = () => {
     <div className="max-w-5xl mx-auto p-4">
       <div className="flex flex-col md:flex-row-reverse bg-white rounded-xl shadow p-4 gap-6 items-start">
         <div className="w-full md:w-[300px] h-[250px] relative bg-gray-100 rounded-lg overflow-hidden shadow-sm">
-          <Image
-            src={imageUrl}
-            alt={product.title}
-            fill
-            className="object-contain"
-            sizes="(max-width: 768px) 100vw, 300px"
-            priority
-          />
+          {imageUrl && (
+            <Image
+              src={imageUrl}
+              alt={product.title}
+              fill
+              className="object-contain"
+              sizes="(max-width: 768px) 100vw, 300px"
+              priority
+            />
+          )}
         </div>
         <div className="flex-1 space-y-2 text-sm sm:text-base text-gray-800">
           <h1 className="text-lg sm:text-2xl font-bold">{product.title}</h1>
